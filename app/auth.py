@@ -25,7 +25,9 @@ def register():
 
         if error is None:
             try:
-                db.execute('INSERT INTO user (username,password) values (?,?)', (username, password))
+                db.execute('INSERT INTO user (username,password) values (?,?)',
+                           (username, generate_password_hash(password)),
+                )
                 db.commit()
             except db.IntegrityError:
                 error = f"Username {username} already exists"
@@ -51,17 +53,30 @@ def login():
 
         if user is None:
             error = 'Username not found'
-        elif check_password_hash(user['password'], password):
+        elif not check_password_hash(user['password'], password):
             error = 'Incorrect password'
 
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            redirect(url_for('index'))
+            session['username'] = user['username']
+            return redirect(url_for('index'))
 
         flash(error)
 
     return render_template('auth/login.html')
+
+
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_db().execute(
+            'SELECT * FROM user WHERE id = ?', (user_id,)
+        ).fetchone()
 
 
 def login_required(view):
@@ -73,4 +88,10 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+@bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
 
