@@ -1,6 +1,5 @@
 import datetime
 import re
-import threading
 import concurrent.futures
 
 from flask import session, Blueprint, render_template
@@ -8,7 +7,6 @@ from . import socketio
 from chatapp.auth import login_required
 from chatapp.db import get_db
 from chatapp.bot_handler import handle_bot_message
-from flask import current_app
 
 bp = Blueprint('chat', __name__)
 
@@ -17,7 +15,8 @@ bp = Blueprint('chat', __name__)
 @login_required
 def index():
     db = get_db()
-    db_messages = db.execute('SELECT * from messages ORDER by id').fetchmany(50)
+    db_messages = db.execute('SELECT * from messages ORDER by id desc').fetchmany(50)
+    db_messages.reverse()
     return render_template('index.html', messages=db_messages)
 
 
@@ -33,7 +32,7 @@ def message_sent(message_received):
     db.execute('INSERT INTO messages (sent_by,message) values (?,?)', (session['username'], message))
     db.commit()
     dt = datetime.datetime.now().strftime('%m-%d-%Y %H:%M')
-    socketio.emit('message', {'sent': dt, 'username': session.get('username'), 'msg': message}, broadcast=True)
+    socketio.emit('message', {'sent': dt, 'username': session.get('username'), 'message': message}, broadcast=True)
 
 
 def handle_bot_messages(message):
@@ -45,7 +44,4 @@ def handle_bot_messages(message):
         dt = datetime.datetime.now().strftime('%m-%d-%Y %H:%M')
         db.execute('INSERT INTO messages (sent_by,message) values (?,?)', ('stock_bot', return_value))
         db.commit()
-        socketio.emit('message', {'sent': dt, 'username': 'stock_bot', 'msg': return_value}, broadcast=True)
-
-    #bot_thread = threading.Thread(target=handle_bot_message, args=(stock_code, current_app))
-    #bot_thread.start()
+        socketio.emit('message', {'sent': dt, 'username': 'stock_bot', 'message': return_value}, broadcast=True)
