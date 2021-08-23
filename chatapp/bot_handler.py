@@ -2,11 +2,8 @@ import uuid
 import pika
 import datetime
 
-from flask import Blueprint
 from . import socketio
 from chatapp.db import get_db
-
-bp = Blueprint('bot_handler', __name__)
 
 
 class BotHandler(object):
@@ -50,5 +47,6 @@ def handle_bot_message(stock_code):
     bh = BotHandler()
     response = bh.call(stock_code)
     dt = datetime.datetime.now().strftime('%m-%d-%Y %H:%M')
-    socketio.emit('message', {'sent': dt, 'username': 'stock_bot', 'msg': response}, broadcast=True)
+    return response
+
 
