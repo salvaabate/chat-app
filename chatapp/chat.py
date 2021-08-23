@@ -9,12 +9,14 @@ bp = Blueprint('chat', __name__)
 @bp.route('/')
 @login_required
 def index():
-    return render_template('index.html')
+    db = get_db()
+    db_messages = db.execute('SELECT * from messages ORDER by id').fetchmany(50)
+    return render_template('index.html', messages=db_messages)
 
 
-@socketio.on('message_sent')
+@socketio.on('text')
 def message_sent(message):
     db = get_db()
     db.execute('INSERT INTO messages (sent_by,message) values (?,?)', (session['username'], message['msg']))
-    socketio.emit('message', {message}, broadcast=True)
-
+    db.commit()
+    socketio.emit('message', {'username': session.get('username'), 'msg': message['msg']}, broadcast=True)
