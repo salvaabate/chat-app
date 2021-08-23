@@ -11,7 +11,6 @@ CREATE TABLE messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     sent TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     sent_by TEXT NOT NULL,
-    message TEXT NOT NULL,
-    FOREIGN KEY (sent_by) REFERENCES user (username)
+    message TEXT NOT NULL
 );
 

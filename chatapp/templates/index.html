@@ -11,8 +11,8 @@
         $(document).ready(function() {
             let socket = io();
             socket.on('message', function (data) {
-                console.log(data.msg);
-                $('#chat').val($('#chat').val() + data.username + ': ' +  data.msg + '\n');
+                $('#chat').val($('#chat').val() +'<' +  data.sent + '> ' +
+                    data.username + ': ' +  data.msg + '\n');
                 $('#chat').scrollTop($('#chat')[0].scrollHeight);
             });
 
