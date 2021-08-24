@@ -17,6 +17,7 @@
             let e = document.createElement('p');
             let sp = document.createElement('span');
             sp.innerHTML = data.username;
+            e.innerHTML = e.innerHTML + '<' + data['sent'] + '> ';
             e.appendChild(sp);
             e.innerHTML = e.innerHTML+': '+ data['message'];
             document.getElementById('message-box').appendChild(e);
@@ -65,6 +66,7 @@
                 e = document.createElement('p');
                 sp = document.createElement('span');
                 sp.innerHTML = '{{msg['sent_by']}}';
+                e.innerHTML = e.innerHTML + '<' + '{{msg['sent']}}' + '> ';
                 e.appendChild(sp);
                 e.innerHTML = e.innerHTML+': '+ '{{msg['message']}}';
                 document.getElementById('message-box').appendChild(e);

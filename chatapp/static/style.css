@@ -26,7 +26,7 @@ body{
 	background: #000000;
 	overflow-y: scroll;
 	padding: 5px;
-	font-size: calc(5px + 1vh + 1vw);
+	font-size: calc(3px + 1vw);
 }
 
 #message-box p{
