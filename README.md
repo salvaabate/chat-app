@@ -1,4 +1,5 @@
-# chat-app-challenge
+# Chat App
+
 Simple chat app created using Python. 
 This application allows several users to log in and talk in a chatroom and also to get stock quotes
 from an API using a specific command.
