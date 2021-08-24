@@ -2,6 +2,7 @@ import pytest
 from chatapp.db import get_db
 
 
+# Testing user registration
 def test_register(client, app):
     assert client.get('/auth/register').status_code == 200
     response = client.post(
@@ -15,6 +16,7 @@ def test_register(client, app):
         ).fetchone() is not None
 
 
+# Testing more user registration
 @pytest.mark.parametrize(('username', 'password', 'message'), (
     ('', 'sadsdas', b'Username is required'),
     ('a', '', b'Password is required'),
@@ -28,6 +30,7 @@ def test_register_validate_input(client, username, password, message):
     assert message in response.data
 
 
+# Testing registered users
 @pytest.mark.parametrize(('username', 'password', 'message'), (
     ('test', 'a', b'Incorrect password'),
     ('a', 'a', b'Username not found')

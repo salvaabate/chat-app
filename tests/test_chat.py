@@ -13,6 +13,7 @@ def test_index(client, auth):
     assert b'Log Out' in response.data
 
 
+# Tests that messages in the database are shown in the chat when the user enters
 def test_message_in_chat(client, auth):
     auth.login()
     response = client.get()
