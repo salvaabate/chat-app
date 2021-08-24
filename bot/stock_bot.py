@@ -46,6 +46,9 @@ def on_request(ch, method, props, body):
     body = body.decode('utf-8')
     result = get_stock_info(body)
     response = make_return_str(body, result)
+    if response is None:
+        response = f'{body} is not a real stock code'
+
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
                      properties=pika.BasicProperties(correlation_id=props.correlation_id),
